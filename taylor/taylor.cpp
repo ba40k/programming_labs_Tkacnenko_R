@@ -10,10 +10,17 @@ int main()
     long double res = 0; // сумма
     long double factorial =1; // значение факторила, начиная с 0
     long double epsilon = pow(10,-k); 
+    int power = 1;
+    long double last_numerator = x;
     for (int i =1; ;i++)
     {
-        int power = pow(2,i-1); // определение степени x у текущего члена
-        long double cur_numerator = pow(x,power); // вычисление числителя текущего члена, а также числа, факториал которого нам нужен
+        power=1<<(i-1); // определение степени x у текущего члена, а также числа, факториал которого нам нужен
+        long double cur_numerator = x;
+        if (i > 1)
+        {
+            cur_numerator = last_numerator*last_numerator; // возведение предыдущего числителя  в квадрат
+            last_numerator = cur_numerator;
+        }
         for (int j = power/2+1;j<=power;j++) /* так как факториал вынесен вне цикла, его значение 
                                                 для предыдущего случая уже сохранено, то есть если сейчас нам надо вычислить
                                                 8!, то мы в прошлый раз вычислили 4!, а значит теперь нам надо идти с 5*/                                          
