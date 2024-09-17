@@ -21,7 +21,7 @@ int main()
             factorial*=j;
         }
         long double cur_number = cur_numerator/factorial; // текущий член ряда Тейлора
-        res+=cur_numerator/factorial; 
+        res+=cur_number; 
         
        
         
