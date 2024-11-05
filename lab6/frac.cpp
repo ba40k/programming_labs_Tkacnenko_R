@@ -18,7 +18,7 @@ properFrac properFrac::getImproperForm()
 {
     return *this;
 }
-void properFrac::makeProper() // так как нам нужно разработать правильнуб дробь, то если она становится непраивильной, то мы просто "усекаем" ее до правильной, как например если сложить слишком большое число в int
+void properFrac::makeProper() // it cuts frac if it bigger or equal to 1, something like when you write to big number in int
 {
     fractionalise();
     numerator %= denominator;
