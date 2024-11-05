@@ -1,29 +1,29 @@
 #include "frac.h"
-int64_t frac::getNumerator()
+int64_t properFrac::getNumerator()
 {
     fractionalise();
     return numerator;
 }
-int64_t frac::getDenominator()
+int64_t properFrac::getDenominator()
 {
     fractionalise();
     return denominator;
 }
-signed char frac::getSign()
+signed char properFrac::getSign()
 {
     fractionalise();
     return sign;
 }
-frac frac::getImproperForm()
+properFrac properFrac::getImproperForm()
 {
     return *this;
 }
-void frac::make_correct()
+void properFrac::makeProper() // так как нам нужно разработать правильнуб дробь, то если она становится непраивильной, то мы просто "усекаем" ее до правильной, как например если сложить слишком большое число в int
 {
     fractionalise();
     numerator %= denominator;
 }
-void frac::fractionalise()
+void properFrac::fractionalise()
 {
     if (numerator + denominator < abs(numerator) + abs(denominator))
     {
@@ -51,7 +51,7 @@ void frac::fractionalise()
 
 }
 
-frac::frac(int _numerator, int _denominator)
+properFrac::properFrac(int _numerator, int _denominator)
 {
     if (_denominator == 0)
     {
@@ -63,16 +63,16 @@ frac::frac(int _numerator, int _denominator)
     numerator = _numerator;
     denominator = _denominator;
     fractionalise();
-    make_correct();
+    makeProper();
 }
-frac::frac(const frac& other)
+properFrac::properFrac(const properFrac& other)
 {
     this->numerator = other.numerator;
     this->denominator = other.denominator;
     this->sign = other.sign;
     this->nan = other.nan;
 }
-frac frac::operator+ (frac& other)
+properFrac properFrac::operator+ (properFrac& other)
 {
     if (other.isNan())
     {
@@ -87,7 +87,7 @@ frac frac::operator+ (frac& other)
     fractionalise();
 
 
-    frac res(0, 1);
+    properFrac res(0, 1);
     
 
     int64_t denLcm = getDenominator() / gcd(getDenominator(), other.getDenominator()) * other.getDenominator();
@@ -96,10 +96,10 @@ frac frac::operator+ (frac& other)
     res.numerator += other.getSign() * other.getNumerator() * denLcm / other.getDenominator();
 
     res.fractionalise();
-    res.make_correct();
+    res.makeProper();
     return res;
 }
-frac frac::operator- (frac& other)
+properFrac properFrac::operator- (properFrac& other)
 {
     if (other.isNan())
     {
@@ -111,11 +111,11 @@ frac frac::operator- (frac& other)
     }
 
     other.fractionalise();
-    frac newOther(other);
+    properFrac newOther(other);
     newOther.sign *= -1;
     return operator+(newOther);
 }
-frac frac::operator* ( frac& other)
+properFrac properFrac::operator* (properFrac& other)
 {
     if (other.isNan())
     {
@@ -126,16 +126,16 @@ frac frac::operator* ( frac& other)
         return *this;
     }
 
-    frac res(*this);
+    properFrac res(*this);
     res.sign *= other.getSign();
     res.denominator *= other.getImproperForm().getDenominator();
     res.numerator *= other.getImproperForm().getNumerator();
     res.fractionalise();
-    res.make_correct();
+    res.makeProper();
     return res;
 
 }
-frac frac::operator/ (frac& other)
+properFrac properFrac::operator/ (properFrac& other)
 {
     if (other.isNan())
     {
@@ -147,23 +147,23 @@ frac frac::operator/ (frac& other)
     }
     if (other.numerator == 0)
     {
-        frac res(0, 0);
+        properFrac res(0, 0);
         return res;
     }
-    frac res(*this);
+    properFrac res(*this);
     res.sign *= other.getSign();
     res.denominator *= other.getImproperForm().getNumerator();
     res.numerator *= other.getImproperForm().getDenominator();
     res.fractionalise();
-    res.make_correct();
+    res.makeProper();
     return res;
 }
-bool frac::isNan() const
+bool properFrac::isNan() const
 {
     return nan;
 }
 
-void frac::show()
+void properFrac::show()
 {
     if (isNan())
     {
@@ -171,16 +171,10 @@ void frac::show()
         return;
     }
     fractionalise();
-    make_correct();
-    int len = 0;
+    makeProper();
     if (getSign() < 0)
     {
-        len++;
         std::cout << '-';
-    }
-    if (numerator / denominator!= 0)
-    {
-        std::cout << numerator / denominator << "_";
     }
     std::cout << getNumerator()%getDenominator() << '\\' << getDenominator();
 }

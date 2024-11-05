@@ -3,7 +3,7 @@
 #include <cstdint>
 #include "algos.h"
 
-class frac
+class properFrac
 {
 private:
     bool nan;
@@ -11,20 +11,20 @@ private:
     int64_t denominator;
     signed char sign;
 public:
-    void make_correct();
+    void makeProper();
     bool isNan() const;
     int64_t getNumerator();
     int64_t getDenominator();
-    frac getImproperForm();
+    properFrac getImproperForm();
     signed char getSign();
     void fractionalise();
-    frac() = delete;
-    frac(int _numerator, int _denominator);
-    frac(const frac& other);
-    frac operator+ (frac& other);
-    frac operator* (frac& other);
-    frac operator/ (frac& other);
-    frac operator- (frac& other);
+    properFrac() = delete;
+    properFrac(int _numerator, int _denominator);
+    properFrac(const properFrac& other);
+    properFrac operator+ (properFrac& other);
+    properFrac operator* (properFrac& other);
+    properFrac operator/ (properFrac& other);
+    properFrac operator- (properFrac& other);
     void show();
 };
 
