@@ -14,13 +14,14 @@ signed char properFrac::getSign()
     fractionalise();
     return sign;
 }
-properFrac properFrac::getImproperForm()
+int64_t properFrac::getIntPart()
 {
-    return *this;
+    return intPart;
 }
-void properFrac::makeProper() // it cuts frac if it bigger or equal to 1, something like when you write to big number in int
+void properFrac::separateIntPart()
 {
     fractionalise();
+    intPart += numerator / denominator;
     numerator %= denominator;
 }
 void properFrac::fractionalise()
@@ -53,6 +54,7 @@ void properFrac::fractionalise()
 
 properFrac::properFrac(int _numerator, int _denominator)
 {
+    intPart = 0;
     if (_denominator == 0)
     {
         nan = 1;
@@ -63,7 +65,7 @@ properFrac::properFrac(int _numerator, int _denominator)
     numerator = _numerator;
     denominator = _denominator;
     fractionalise();
-    makeProper();
+    separateIntPart();
 }
 properFrac::properFrac(const properFrac& other)
 {
@@ -71,6 +73,7 @@ properFrac::properFrac(const properFrac& other)
     this->denominator = other.denominator;
     this->sign = other.sign;
     this->nan = other.nan;
+    this->intPart = other.intPart;
 }
 properFrac properFrac::operator+ (properFrac& other)
 {
@@ -86,17 +89,18 @@ properFrac properFrac::operator+ (properFrac& other)
     other.fractionalise();
     fractionalise();
 
+    
 
     properFrac res(0, 1);
     
 
     int64_t denLcm = getDenominator() / gcd(getDenominator(), other.getDenominator()) * other.getDenominator();
     res.denominator = denLcm;
-    res.numerator = getSign()* getNumerator() * denLcm / getDenominator();
-    res.numerator += other.getSign() * other.getNumerator() * denLcm / other.getDenominator();
+    res.numerator = getSign()* (getNumerator() + getDenominator()*getIntPart())* denLcm / getDenominator();
+    res.numerator += other.getSign() * (other.getNumerator() + other.getDenominator() * other.getIntPart())* denLcm / other.getDenominator();
 
     res.fractionalise();
-    res.makeProper();
+    res.separateIntPart();
     return res;
 }
 properFrac properFrac::operator- (properFrac& other)
@@ -127,36 +131,26 @@ properFrac properFrac::operator* (properFrac& other)
     }
 
     properFrac res(*this);
+    res.numerator = res.getIntPart() * res.getDenominator() + res.getNumerator();
+    res.intPart = 0;
     res.sign *= other.getSign();
-    res.denominator *= other.getImproperForm().getDenominator();
-    res.numerator *= other.getImproperForm().getNumerator();
+    res.denominator *= other.getDenominator();
+    res.numerator *= (other.getNumerator() + other.getDenominator() * other.getIntPart());
     res.fractionalise();
-    res.makeProper();
+    res.separateIntPart();
     return res;
 
 }
 properFrac properFrac::operator/ (properFrac& other)
 {
-    if (other.isNan())
-    {
-        return other;
-    }
-    if (this->isNan())
-    {
-        return *this;
-    }
-    if (other.numerator == 0)
-    {
-        properFrac res(0, 0);
-        return res;
-    }
-    properFrac res(*this);
-    res.sign *= other.getSign();
-    res.denominator *= other.getImproperForm().getNumerator();
-    res.numerator *= other.getImproperForm().getDenominator();
-    res.fractionalise();
-    res.makeProper();
-    return res;
+    properFrac res(other);
+    res.numerator = res.getIntPart() * res.getDenominator() + res.getNumerator();
+    res.intPart = 0;
+    int64_t temp = res.numerator;
+    res.numerator = res.denominator;
+    res.denominator = temp;
+    res.separateIntPart();
+    return (*this)*res;
 }
 bool properFrac::isNan() const
 {
@@ -171,10 +165,14 @@ void properFrac::show()
         return;
     }
     fractionalise();
-    makeProper();
+    separateIntPart();
     if (getSign() < 0)
     {
         std::cout << '-';
+    }
+    if (intPart > 0)
+    {
+        std::cout << intPart << '_';
     }
     std::cout << getNumerator()%getDenominator() << '\\' << getDenominator();
 }

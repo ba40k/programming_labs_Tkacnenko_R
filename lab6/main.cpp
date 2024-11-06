@@ -3,7 +3,8 @@
 
 int main()
 {
-    // if you thing that you got wrong answer check out makeProper method
+    // ВАЖНО ! Если вам покажется, что какие-то операции дают неправильный ответ
+    // ВАЖНО ! то посмотрите на метод makePropert
     properFrac f(-5, 4);
     properFrac f2(7, 8);
     properFrac f4(0, 5);
@@ -11,7 +12,7 @@ int main()
 
     (f2+f2 + f4 + f3).show();
     std::cout << '\n';
-    (f * f2).show(); // for example here everything is correct
+    (f * f2).show(); // например здесь все правильно
     std::cout << '\n';
 
     properFrac a(10, 5);

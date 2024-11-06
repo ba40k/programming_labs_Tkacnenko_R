@@ -9,14 +9,16 @@ private:
     bool nan;
     int64_t numerator;
     int64_t denominator;
+    int64_t intPart;
     signed char sign;
 public:
-    void makeProper();
+    
     bool isNan() const;
     int64_t getNumerator();
     int64_t getDenominator();
-    properFrac getImproperForm();
+    int64_t getIntPart();
     signed char getSign();
+    void separateIntPart();
     void fractionalise();
     properFrac() = delete;
     properFrac(int _numerator, int _denominator);
@@ -25,6 +27,7 @@ public:
     properFrac operator* (properFrac& other);
     properFrac operator/ (properFrac& other);
     properFrac operator- (properFrac& other);
+    
     void show();
 };
 
