@@ -1,16 +1,25 @@
 #include <iostream>
 #include <iomanip>
 #include <cmath>
+uint64_t Pow(uint64_t val, int p) {
+    uint64_t res = 1;
+    for (int i = 0; i < p; i++) {
+        res *= val;
 
+    }
+    return res;
+}
 int main() {
-    const int n = 3844221 + 5;
+    const int n = 1000000;
     long double* arr = new long double[n];
 
- 
+    long double target;
     arr[0] = 1.0;
 
 
     __asm {
+        fldpi
+        fst target
         finit 
         mov ebx, arr       // Указатель на начало массива
         mov ecx, 1         // Текущий индекс (начинаем с 1)
@@ -71,21 +80,27 @@ int main() {
     }
 
    
-    long double target = 0.8224670334241132; 
+    
     int cur = 1;
    
-    for (int i = 0; i < n; ++i) {
+    for (int i = 0; i < 1000000; ++i) {
+        arr[i] = sqrtl(12 *(arr[i]));
         if (cur > 16) {
             break;
        }
-        if (fabs(target - arr[i]) <= pow(10.0, -cur - 1) ){
+
+        if (static_cast<uint64_t>(target * Pow(10,cur)) == static_cast<uint64_t>(arr[i] * Pow(10, cur))) {
+            if (cur == 11) {
+                std::cout << static_cast<uint64_t>(target * Pow(10, cur)) << '|' << static_cast<uint64_t>(arr[i] * Pow(10, cur));
+            }
             std::cout << "precision is " << cur << '\n';
-            std::cout<< "target is :" <<std::fixed<<std::setprecision(15)<< target << '\n';
+            std::cout<< "target is :" <<std::fixed<<std::setprecision(100)<< target << '\n';
             std::cout<< "iterations is: " << i + 1 << '\n';
-            std::cout << "current is " << std::fixed << std::setprecision(15)<< arr[i] << '\n';
+            std::cout << "current is " << std::fixed << std::setprecision(100)<< arr[i] << '\n';
             std::cout << "=========\n";
             cur++;
         }
+       
     }
 
     delete[] arr;
